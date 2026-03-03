@@ -1,9 +1,9 @@
 {
     "id": "EF1468A4",
-    "path": null,
-    "project_path": null,
+    "path": "C:/R_Projects/Project-CSIS-Ephys/analysis/prelim group diffs.R",
+    "project_path": "analysis/prelim group diffs.R",
     "type": "r_source",
-    "hash": "0",
+    "hash": "1789264254",
     "contents": "",
     "dirty": false,
     "created": 1772565647672.0,
@@ -12,14 +12,16 @@
     "properties": {
         "tempName": "Untitled1",
         "source_window_id": "",
-        "Source": "Source"
+        "Source": "Source",
+        "cursorPosition": "12,0",
+        "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 562949960003432,
-    "encoding": "",
+    "lastKnownWriteTime": 1772568250,
+    "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1772565647672,
+    "last_content_update": 1772568250441,
     "read_only": false,
     "read_only_alternatives": []
 }
