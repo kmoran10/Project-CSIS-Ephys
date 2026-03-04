@@ -114,37 +114,143 @@ mc.diff.long_filtered <- mc.diff.long %>%
   filter(!subslice %in% subslices_to_exclude)
 
 
+#group*sex col
+#mcpro.long$gxs <- paste0(mcpro.long$sex, "_",mcpro.long$group)
 
-####graphs
+mcpro.long$sex <- as.factor(mcpro.long$sex)
 
+#####################################################  Graphs
+
+# mcpro.long %>% 
+#   filter(drug == "TTX") %>% 
+#   ggplot(., aes(mV, pA, color = group, linetype = sex)) +
+#   geom_point() +
+#   geom_smooth(method = lm, formula = y ~ splines::bs(x, 3), se = T) +
+#   theme_classic() +
+#   ggtitle("Outward Current (TTX)")+ 
+#   geom_hline(yintercept=0)
+
+
+## TTX
 mcpro.long %>% 
   filter(drug == "TTX") %>% 
-  ggplot(., aes(mV, pA, color = group, linetype = sex)) +
-  geom_point() +
-  geom_smooth(method = lm, formula = y ~ splines::bs(x, 3), se = T) +
-  theme_classic() +
-  ggtitle("Outward Current (TTX)")+ 
-  geom_hline(yintercept=0)
-
-
-mcpro.long %>% 
-  filter(drug == "TTX") %>% 
-  ggline(., x = "mV", y = "pA", add = "mean_se", group="group", color="group", size=1, ylab = "pA (+/- SEM)")+
+  ggline(., x = "mV", y = "pA", add = "mean_se", group="group", color="group", linewidth=1, ylab = "pA (+/- SEM)")+
   stat_compare_means(aes(group = group, label=..p.adj..), method="t.test", label = "p.signif", 
                      symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, 1), 
                                         symbols = c( "***", "**", "*", "")),
                      label.y= 40 , size=8) +
   ggtitle("Outward Current (TTX)")
-## not grouping by sex
 
 mcpro.long %>% 
   filter(drug == "TTX") %>% 
-  ggline(., x = "mV", y = "pA", add = "mean_se", group="group", color="group", size=1, ylab = "pA (+/- SEM)")+
-  # stat_compare_means(aes(group = group, label=..p.adj..), method="t.test", label = "p.signif", 
-  #                    symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, 1), 
-  #                                       symbols = c( "***", "**", "*", "")),
-  #                    label.y= 40 , size=8) +
+  ggline(., x = "mV", y = "pA", add = "mean_se", group="sex", color="sex", linewidth=1, ylab = "pA (+/- SEM)")+
+  stat_compare_means(aes(group = group, label=..p.adj..), method="t.test", label = "p.signif", 
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, 1), 
+                                        symbols = c( "***", "**", "*", "")),
+                     label.y= 40 , size=8) +
   ggtitle("Outward Current (TTX)")
+
+
+mcpro.long %>%
+  filter(drug == "TTX") %>%
+  ggplot(aes(x = mV, y = pA, color = sex, linetype = group)) +
+  # Line connecting means
+  stat_summary(geom = "line", fun = mean, size = 1) +
+  # Points at means
+  stat_summary(geom = "point", fun = mean, size = 2) +
+  # Error bars (mean ± SEM)
+  stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2) +
+  labs(title = "Outward Current (TTX)", y = "pA (+/- SEM)") +
+  theme_classic()
+
+
+
+## XE
+mcpro.long %>% 
+  filter(drug == "XE") %>% 
+  ggline(., x = "mV", y = "pA", add = "mean_se", group="group", color="group", linewidth=1, ylab = "pA (+/- SEM)")+
+  ggtitle("Outward Current (XE)")
+
+mcpro.long %>% 
+  filter(drug == "XE") %>% 
+  ggline(., x = "mV", y = "pA", add = "mean_se", group="sex", color="sex", linewidth=1, ylab = "pA (+/- SEM)")+
+  ggtitle("Outward Current (XE)")
+
+
+mcpro.long %>%
+  filter(drug == "XE") %>%
+  ggplot(aes(x = mV, y = pA, color = sex, linetype = group)) +
+  # Line connecting means
+  stat_summary(geom = "line", fun = mean, size = 1) +
+  # Points at means
+  stat_summary(geom = "point", fun = mean, size = 2) +
+  # Error bars (mean ± SEM)
+  stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2) +
+  labs(title = "Outward Current (XE)", y = "pA (+/- SEM)") +
+  theme_classic()
+
+
+
+#### TTX-XE
+mcpro.long_filtered %>% 
+  ggline(., x = "mV", y = "pA", add = "mean_se", group="group", color="group", linewidth=1, ylab = "pA (+/- SEM)")+
+  ggtitle("Outward Current (TTX-XE)")
+
+mcpro.long_filtered %>% 
+  ggline(., x = "mV", y = "pA", add = "mean_se", group="sex", color="sex", linewidth=1, ylab = "pA (+/- SEM)")+
+  ggtitle("Outward Current (TTX-XE)")
+
+
+mcpro.long_filtered %>%
+  ggplot(aes(x = mV, y = pA, color = sex, linetype = group)) +
+  # Line connecting means
+  stat_summary(geom = "line", fun = mean, size = 1) +
+  # Points at means
+  stat_summary(geom = "point", fun = mean, size = 2) +
+  # Error bars (mean ± SEM)
+  stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2) +
+  geom_hline(yintercept = 0, linetype = "solid", color = "black", size = 0.5) +
+  labs(title = "Outward Current (TTX-XE)", y = "pA (+/- SEM)") +
+  theme_classic()+
+  theme(plot.title = element_text(size = 20)) 
+
+
+
+### actual analysis -- no diffs, but still very low Ns
+mc.diff.long_filtered2 <- mc.diff.long_filtered
+
+mc.diff.long_filtered2$mvsq <- mc.diff.long_filtered2$mV^2
+
+
+
+mc.dif.mm.fullint <- lmer(pA~group * sex * (mV+mvsq) + (1 | subslice), data=mc.diff.long_filtered2, na.action=na.exclude)
+summary(mc.dif.mm.fullint)
+
+
+mc.dif.mm.int <- lmer(pA~group * sex + mV + mvsq + (1 | subslice), data=mc.diff.long_filtered2, na.action=na.exclude)
+summary(mc.dif.mm.int)
+
+
+mc.dif.mm.main <- lmer(pA~group + sex + mV + mvsq + (1 | subslice), data=mc.diff.long_filtered2, na.action=na.exclude)
+summary(mc.dif.mm.main)
+
+## Check for linearity and homoscedasticity
+#plot(mc.dif.mm.main, type = c("p", "smooth"))
+
+## Check for normality of residuals
+#qqnorm(resid(mc.dif.mm.main))
+#qqline(resid(mc.dif.mm.main))
+##theyre *fine*
+
+###### correlation time. extract -30mV M-current pA and attach to rie
+
+rie2 <- mc.diff.long_filtered %>%
+  filter(mV == -30) %>%
+  rename(max_MC_pA = pA) %>%
+  select(1,2,4) %>%
+  left_join(rie,.)
+
+write.csv(rie2, "rawdata/rie_and_maxMC.csv")
 
 
 
