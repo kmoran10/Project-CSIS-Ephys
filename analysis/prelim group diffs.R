@@ -118,12 +118,63 @@ in.re.tp2 %>%
 # all well under 20, looks good
 
 
+
+in.re.tp2.start <- in.re.tp2 %>% filter(Inp.re.timepoint == "in.re.start") %>% select(!Inp.re.timepoint)
+
+inre.lm.int <- lm(Inp.re ~ sex*group, data = in.re.tp2.start)
+summary(inre.lm.int)
+
+inre.lm.main <- lm(Inp.re ~ sex + group, data = in.re.tp2.start)
+summary(inre.lm.main)
+
+
+
+in.re.tp2 %>%
+  na.omit() %>% 
+  group_by(Inp.re.timepoint, sex) %>%
+  summarise(
+    # Group stats
+    group1 = unique(group)[1],
+    mean1 = mean(Inp.re[group == unique(group)[1]]),
+    sd1 = sd(Inp.re[group == unique(group)[1]]),
+    n1 = sum(group == unique(group)[1]),
+    
+    group2 = unique(group)[2],
+    mean2 = mean(Inp.re[group == unique(group)[2]]),
+    sd2 = sd(Inp.re[group == unique(group)[2]]),
+    n2 = sum(group == unique(group)[2]),
+    
+    # T-test
+    t_test = list(t.test(Inp.re ~ group)),
+    t_stat = t_test[[1]]$statistic,
+    df = t_test[[1]]$parameter,
+    p_value = t_test[[1]]$p.value,
+    diff = mean2 - mean1,
+    ci_low = t_test[[1]]$conf.int[1],
+    ci_high = t_test[[1]]$conf.int[2],
+    
+    # Cohen's d (manual calculation)
+    pooled_sd = sqrt(((n1-1)*sd1^2 + (n2-1)*sd2^2)/(n1 + n2 - 2)),
+    cohens_d = diff/pooled_sd,
+    
+    .groups = "drop"
+  ) %>%
+  select(-t_test)
+## ok - will go back and add marker to graph?
+
+
+
+
+
+
+
+
 ##### EPSCs (save as 350x450)
 
 ##event number
 rie %>% 
   filter(RMP.pre < -40) %>% 
-  filter(epsc.events <3000) %>% 
+  filter(epsc.events <1000) %>% 
   ggplot(aes(group,epsc.events, fill = sex, color = group))+
   geom_boxplot(outlier.shape = NA)+
   geom_jitter(position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.75), size = 1.5) +
@@ -137,7 +188,7 @@ rie %>%
         axis.text=element_text(size=16),
         axis.title=element_text(size=18,face="bold"),
         plot.title = element_text(size=24, hjust = 0.4)) 
-# excluding the 1 cell that had 3000+ events
+# excluding the 3 cells that had 1000+ events
 
 epsc.events.lm.int <- lm(epsc.events ~ sex*group, data = rie)
 summary(epsc.events.lm.int)
@@ -152,7 +203,7 @@ summary(epsc.events.lm.main)
 ##epsc amplitude
 rie %>% 
   filter(RMP.pre < -40) %>% 
-  filter(epsc.events <3000) %>% 
+  filter(epsc.events <1000) %>% 
   ggplot(aes(group,epsc.amp, fill = sex, color=group))+
   geom_boxplot(outlier.shape = NA)+
   geom_jitter(position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.75), size = 1.5) +
@@ -180,7 +231,7 @@ summary(epsc.amp.lm.main)
 ##epsc AUC pAms
 rie %>% 
   filter(RMP.pre < -40) %>% 
-  filter(epsc.events <3000) %>% 
+  filter(epsc.events <1000) %>% 
   ggplot(aes(group,epsc.auc.pAms, fill = sex, color=group))+
   geom_boxplot(outlier.shape = NA)+
   geom_jitter(position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.75), size = 1.5) +
@@ -205,4 +256,3 @@ summary(epsc.auc.lm.main)
 
 
 
-### still need to do all actual analysis on RMP, EPSC events, EPSC amp, and EPSC AUP

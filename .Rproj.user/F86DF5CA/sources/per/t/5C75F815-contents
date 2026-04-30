@@ -236,7 +236,7 @@ summary(mc.dif.mm.main)
 
 ## Check for linearity and homoscedasticity
 #plot(mc.dif.mm.main, type = c("p", "smooth"))
-
+#
 ## Check for normality of residuals
 #qqnorm(resid(mc.dif.mm.main))
 #qqline(resid(mc.dif.mm.main))
@@ -247,10 +247,28 @@ summary(mc.dif.mm.main)
 rie2 <- mc.diff.long_filtered %>%
   filter(mV == -30) %>%
   rename(max_MC_pA = pA) %>%
-  select(1,2,4) %>%
+  select(1,2,5) %>%
   left_join(rie,.)
 
 write.csv(rie2, "rawdata/rie_and_maxMC.csv")
 
 
+
+rie2 %>% 
+  filter(RMP.xe < -40) %>% 
+  filter(epsc.events <1000) %>% 
+  ggplot(aes(group,max_MC_pA, fill = sex, color=group))+
+  geom_boxplot(outlier.shape = NA)+
+  geom_jitter(position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.75), size = 1.5) +
+  scale_fill_manual(values=c("hotpink", "skyblue")) +
+  scale_color_manual(values=c("gray", "black"))+
+  labs(title="Max M-Current @ -30 mV",x="Group", y = "pA") +
+  theme_classic() +
+  theme(axis.line = element_line(colour = 'black', size = 1),
+        axis.ticks = element_line(colour = "black", size = 1),
+        #legend.position="none",
+        axis.text=element_text(size=16),
+        axis.title=element_text(size=18,face="bold"),
+        plot.title = element_text(size=24, hjust = 0.4)) 
+### i need to double check this is correct......
 
