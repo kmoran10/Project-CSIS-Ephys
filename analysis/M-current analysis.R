@@ -8,7 +8,6 @@ library(tidyverse)
 library(ggpubr)
 library(car)
 
-source("functions/geom_boxjitter.R")
 
 
 
@@ -40,7 +39,7 @@ mcd3 <- left_join(rie.id,tmcd2, by="subslice")
 mcd4 <- mcd3[!is.na(mcd3$drug),]
 
 
-
+# i have a gut feeling i did something wrong here maybe swapping some values so i am going to redo this M-current calculation code
 mc.pro <- mcd4 %>%
   filter(tp %in% c("Y1", "Y2", "Y3", "Y4")) %>%
   mutate(
@@ -75,6 +74,14 @@ mc.pro <- mcd4 %>%
   ) %>%
   pivot_wider(names_from = name, values_from = avg_diff) %>%
   rename(drug = drug_group)
+
+
+
+
+
+
+
+
 
 
 
@@ -192,16 +199,16 @@ mcpro.long %>%
 
 
 #### TTX-XE
-mcpro.long_filtered %>% 
+mc.diff.long_filtered %>% 
   ggline(., x = "mV", y = "pA", add = "mean_se", group="group", color="group", linewidth=1, ylab = "pA (+/- SEM)")+
   ggtitle("Outward Current (TTX-XE)")
 
-mcpro.long_filtered %>% 
+mc.diff.long_filtered %>% 
   ggline(., x = "mV", y = "pA", add = "mean_se", group="sex", color="sex", linewidth=1, ylab = "pA (+/- SEM)")+
   ggtitle("Outward Current (TTX-XE)")
 
 
-mcpro.long_filtered %>%
+mc.diff.long_filtered %>%
   ggplot(aes(x = mV, y = pA, color = sex, linetype = group)) +
   # Line connecting means
   stat_summary(geom = "line", fun = mean, size = 1) +
@@ -216,7 +223,7 @@ mcpro.long_filtered %>%
 
 
 
-### actual analysis -- no diffs, but still very low Ns
+### actual analysis --  
 mc.diff.long_filtered2 <- mc.diff.long_filtered
 
 mc.diff.long_filtered2$mvsq <- mc.diff.long_filtered2$mV^2
@@ -227,11 +234,11 @@ mc.dif.mm.fullint <- lmer(pA~group * sex * (mV+mvsq) + (1 | subslice), data=mc.d
 summary(mc.dif.mm.fullint)
 
 
-mc.dif.mm.int <- lmer(pA~group * sex + mV + mvsq + (1 | subslice), data=mc.diff.long_filtered2, na.action=na.exclude)
-summary(mc.dif.mm.int)
+mc.dif.mm.int1 <- lmer(pA~ group*sex + sex*(mV + mvsq) + group*(mV+mvsq) + (1 | subslice), data=mc.diff.long_filtered2, na.action=na.exclude)
+summary(mc.dif.mm.int1)
 
 
-mc.dif.mm.main <- lmer(pA~group + sex + mV + mvsq + (1 | subslice), data=mc.diff.long_filtered2, na.action=na.exclude)
+mc.dif.mm.main <- lmer(pA~group + sex + (mV + mvsq) + (1 | subslice), data=mc.diff.long_filtered2, na.action=na.exclude)
 summary(mc.dif.mm.main)
 
 ## Check for linearity and homoscedasticity
@@ -245,7 +252,7 @@ summary(mc.dif.mm.main)
 ###### correlation time. extract -30mV M-current pA and attach to rie
 
 rie2 <- mc.diff.long_filtered %>%
-  filter(mV == -30) %>%
+  filter(mV == -40) %>%
   rename(max_MC_pA = pA) %>%
   select(1,2,5) %>%
   left_join(rie,.)
@@ -262,7 +269,7 @@ rie2 %>%
   geom_jitter(position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.75), size = 1.5) +
   scale_fill_manual(values=c("hotpink", "skyblue")) +
   scale_color_manual(values=c("gray", "black"))+
-  labs(title="Max M-Current @ -30 mV",x="Group", y = "pA") +
+  labs(title="Max M-Current @ -40 mV",x="Group", y = "pA") +
   theme_classic() +
   theme(axis.line = element_line(colour = 'black', size = 1),
         axis.ticks = element_line(colour = "black", size = 1),
@@ -270,5 +277,18 @@ rie2 %>%
         axis.text=element_text(size=16),
         axis.title=element_text(size=18,face="bold"),
         plot.title = element_text(size=24, hjust = 0.4)) 
-### i need to double check this is correct......
 
+max.mc.pa.lm.int <- lm(max_MC_pA ~ sex*group, data = rie2)
+summary(max.mc.pa.lm.int) #no effect here -- BUT should still report given full interaction model had definite effect. 
+
+max.mc.pa.lm.main <- lm(max_MC_pA ~ sex+group, data = rie2)
+summary(max.mc.pa.lm.main)
+
+
+
+### i need to double check this is all correct and do runs with outliers and flags removed......
+
+
+
+# CSIS_XE_sensitive_current_4Troy <- mc.diff %>% arrange(group,sex)
+# write.csv(CSIS_XE_sensitive_current_4Troy, "results/CSIS_XE_sensitive_current_4Troy.csv")
