@@ -17,6 +17,7 @@ library(lme4)
 library(lmerTest)
 library(ggpubr)
 library(car)
+library(emmeans)
 
 mcd <- read.csv("rawdata/mcurrent.csv")
 
@@ -232,6 +233,172 @@ mc.diff.long_filtered %>%
   scale_color_manual(values=c("#f64ed5", "#55a0fd")) 
 
 
+######################################################################### inserting grubbs testing and grubbs tested filtered analysis here, as well as removing -25mV timepoint. 
+
+grubbs.test(type = 11, mc.diff$'-25') #none
+grubbs.test(type = 11, mc.diff$'-30') #some - fix - c0880B
+grubbs.test(type = 11, mc.diff$'-35') #some - fix - c0880B
+grubbs.test(type = 11, mc.diff$'-40') #some - fix - c0880B
+grubbs.test(type = 11, mc.diff$'-45') #some - fix - c0880B
+grubbs.test(type = 11, mc.diff$'-50') #some - fix - c0880B
+grubbs.test(type = 11, mc.diff$'-55') #some - fix - c0880B
+grubbs.test(type = 11, mc.diff$'-60') #none
+grubbs.test(type = 11, mc.diff$'-65') #none
+grubbs.test(type = 11, mc.diff$'-70') #none
+grubbs.test(type = 11, mc.diff$'-75') #some - fix - c0824A or c0818C
+
+# first just removing c0880B -- this IS the cell that I thought might be too posterior anyway
+
+mc.diff.f1 <- mc.diff %>% filter(subslice != "c0880B")
+
+grubbs.test(type = 11, mc.diff.f1$'-25') #some now? gonna remove entire pool anyway so dw
+grubbs.test(type = 10, mc.diff.f1$'-30') #some - barely - c0880A
+grubbs.test(type = 10, mc.diff.f1$'-35') #some - barely - c0830B
+grubbs.test(type = 11, mc.diff.f1$'-40') #none
+grubbs.test(type = 11, mc.diff.f1$'-45') #none
+grubbs.test(type = 11, mc.diff.f1$'-50') #some - barely - c0896B
+grubbs.test(type = 11, mc.diff.f1$'-55') #none
+grubbs.test(type = 11, mc.diff.f1$'-60') #none
+grubbs.test(type = 11, mc.diff.f1$'-65') #none
+grubbs.test(type = 11, mc.diff.f1$'-70') #none
+grubbs.test(type = 11, mc.diff.f1$'-75') #some - fix - c0824A or c0818C
+
+# ok - none of these occur in multiple places. Therefore, I'm just gonna keep all of them. 
+
+mc.diff.f1.wide <- mc.diff.f1 %>% select(!("-25"))
+
+mc.diff.f1.long <- mc.diff.f1 %>% 
+  pivot_longer(col = c(4:14), names_to = "mV", values_to = "pA") %>% filter(mV != "-25")
+mc.diff.f1.long$mV <- as.numeric(mc.diff.f1.long$mV)
+mc.diff.f1.long$group <- as.factor(mc.diff.f1.long$group)
+
+
+mc.diff.f1.long%>%
+  ggplot(aes(x = mV, y = pA, color = group, linetype = sex)) +
+  # Line connecting means
+  stat_summary(geom = "line", fun = mean, size = 1) +
+  # Points at means
+  stat_summary(geom = "point", fun = mean, size = 2) +
+  # Error bars (mean ± SEM)
+  stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2) +
+  geom_hline(yintercept = 0, linetype = "solid", color = "black", size = 0.5) +
+  labs(title = "A. XE991 Sensitive Current (M-current)", y = "pA (+/- SEM)") +
+  theme_classic()+
+  theme(axis.line = element_line(colour = 'black', size = 1),
+        axis.ticks = element_line(colour = "black", size = 1),
+        #legend.position="none",
+        axis.text=element_text(size=16),
+        axis.title=element_text(size=18,face="bold"),
+        plot.title = element_text(size=28, hjust = 0.4)) +
+  scale_color_manual(values=c("#55a0fd", "#f64ed5")) 
+
+
+mc.diff.f1.long2 <- mc.diff.f1.long
+
+mc.diff.f1.long2$mvsq <- mc.diff.f1.long2$mV^2
+
+# ****
+mc.dif.f1.mm.fullint <- lmer(pA~group * sex * poly(mV, 2) + (1 + poly(mV, 2)| subslice), data=mc.diff.f1.long2, na.action=na.exclude)
+summary(mc.dif.f1.mm.fullint)
+AIC(mc.dif.f1.mm.fullint) # lower AIC -good
+
+mc.dif.f1.mm.fullint.nrs <- lmer(pA~group * sex * poly(mV, 2) + (1 | subslice), data=mc.diff.f1.long2, na.action=na.exclude)
+summary(mc.dif.f1.mm.fullint.nrs)
+AIC(mc.dif.f1.mm.fullint.nrs)
+
+
+mc.dif.f1.mm.int1 <- lmer(pA~ group*sex + sex*poly(mV, 2) + group*poly(mV, 2) + (1 + mV| subslice), data=mc.diff.f1.long2, na.action=na.exclude)
+summary(mc.dif.f1.mm.int1)
+
+
+mc.dif.f1.mm.main <- lmer(pA~group + sex + poly(mV, 2) + (1 + poly(mV, 2)| subslice), data=mc.diff.f1.long2, na.action=na.exclude)
+summary(mc.dif.f1.mm.main)
+
+
+
+# males only
+mc.diff.f1.long2.m <- mc.diff.f1.long2 %>% filter(sex=="Male")
+mc.diff.f1.long2.f <- mc.diff.f1.long2 %>% filter(sex=="Female")
+
+mc.dif.f1.mm.fullint.m <- lmer(pA~group * poly(mV, 2) + (1 + poly(mV, 2) | subslice), data=mc.diff.f1.long2.m, na.action=na.exclude)
+summary(mc.dif.f1.mm.fullint.m)
+AIC(mc.dif.f1.mm.fullint.m) # lower AIC -good
+
+mc.dif.f1.mm.fullint.m.nrs <- lmer(pA~group * poly(mV, 2) + (1 | subslice), data=mc.diff.f1.long2.m, na.action=na.exclude)
+summary(mc.dif.f1.mm.fullint.m.nrs)
+AIC(mc.dif.f1.mm.fullint.m.nrs)
+
+
+#*****
+mc.dif.f1.mm.main.m <- lmer(pA~group + poly(mV, 2) + (1 + poly(mV, 2) | subslice), data=mc.diff.f1.long2.m, na.action=na.exclude)
+summary(mc.dif.f1.mm.main.m) # main effect of group = [b = -4.45 ± 2.37, n = 37, p = 0.069]
+AIC(mc.dif.f1.mm.main.m) # lower AIC -good
+anova(mc.dif.f1.mm.main.m, type = 2)
+emmeans(mc.dif.f1.mm.main.m, ~ group)
+
+mc.dif.f1.mm.main.m.nrs <- lmer(pA~group + poly(mV, 2) + (1 | subslice), data=mc.diff.f1.long2.m, na.action=na.exclude)
+summary(mc.dif.f1.mm.main.m.nrs)
+AIC(mc.dif.f1.mm.main.m.nrs)
+
+
+
+mc.diff.f1.long2.m %>%
+  ggplot(aes(x = mV, y = pA, color = group)) +
+  # Line connecting means
+  stat_summary(geom = "line", fun = mean, size = 1) +
+  # Points at means
+  stat_summary(geom = "point", fun = mean, size = 2) +
+  # Error bars (mean ± SEM)
+  stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2) +
+  geom_hline(yintercept = 0, linetype = "solid", color = "black", size = 0.5) +
+  labs(title = "B. Males: XE991 Sensitive Current (M-current)", y = "pA (+/- SEM)") +
+  theme_classic()+
+  theme(axis.line = element_line(colour = 'black', size = 1),
+        axis.ticks = element_line(colour = "black", size = 1),
+        #legend.position="none",
+        axis.text=element_text(size=16),
+        axis.title=element_text(size=18,face="bold"),
+        plot.title = element_text(size=28, hjust = 0.4)) +
+  scale_color_manual(values=c("#55a0fd", "#f64ed5")) 
+
+
+## asking tommy and troy about how they have analyzed these data before... 
+## saving m-c data to send to them 
+write.csv(mc.diff.f1.wide, "rawdata/mc.diff.f1.wide.csv")
+write.csv(mc.diff.f1.long, "rawdata/mc.diff.f1.long.csv")
+
+# ## testing just an anova....
+# # in all
+# aov1 <- lm(pA ~ group*sex*mV,
+#          data = mc.diff.f1.long2)
+# Anova(aov1, type = 2)
+# 
+# aov2 <- lm(pA ~ group+sex+mV,
+#             data = mc.diff.f1.long2)
+# Anova(aov2, type = 2)
+# 
+# #in males
+# aov3 <- lm(pA ~ group*mV,
+#             data = mc.diff.f1.long2.m)
+# Anova(aov3, type = 2) #no int
+# 
+# aov4 <- lm(pA ~ group+mV,
+#             data = mc.diff.f1.long2.m)
+# Anova(aov4, type = 2) ###### SIG IN MALES
+# 
+# #in females
+# aov5 <- lm(pA ~ group*mV,
+#             data = mc.diff.f1.long2.f)
+# Anova(aov5, type = 2)
+# 
+# aov6 <- lm(pA ~ group+mV,
+#             data = mc.diff.f1.long2.f)
+# Anova(aov6, type = 2)
+### LOL JK FORGOT THIS IS REPEATED MEASURES I GOTTA USE MY LMER
+
+
+
+######################################################################### END inserting grubbs testing and grubbs tested filtered analysis here, as well as removing -25mV timepoint. 
 
 ### actual analysis --  
 mc.diff.long_filtered2 <- mc.diff.long_filtered

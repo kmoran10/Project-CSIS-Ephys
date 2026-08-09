@@ -1,0 +1,54 @@
+subject,sex,group,oft_10cm_center_pct_time,oft_corners_pct_time
+1748n,Male,Control,0.9,17.78333333
+1749n,Male,Control,0.983333333,17.31666667
+e3096,Male,Control,0,24.78333333
+k1983,Male,Control,3.533333333,20.55
+e3089,Male,Control,2.816666667,18.23333333
+e3093,Male,Control,0.166666667,23.33333333
+k1984,Male,Control,0.25,22.11666667
+1750n,Male,Control,0.333333333,12.81666667
+e3088,Male,Control,0.633333333,14.73333333
+e3095,Male,Control,0.566666667,27.73333333
+k1982,Male,Control,1.716666667,18.05
+p2714,Male,Stressed,0.033333333,45.75
+p2715,Male,Stressed,3.983333333,16.75
+p2705,Male,Stressed,0.85,33.41666667
+p2708,Male,Stressed,0.35,33.03333333
+p2711,Male,Stressed,1.216666667,46.66666667
+p2710,Male,Stressed,0.65,26.6
+p2704,Male,Stressed,0.55,25.1
+p2709,Male,Stressed,0.316666667,39.18333333
+p2707,Male,Stressed,0.15,23.16666667
+p2702,Male,Stressed,0.733333333,21.55
+p2701,Male,Stressed,0.383333333,30.95
+p2712,Male,Stressed,0.4,30.96666667
+p2703,Male,Stressed,0.983333333,21.78333333
+p2713,Male,Stressed,0.1,31.41666667
+p2706,Male,Stressed,0.3,24.95
+p2719,D. Female,Control,0.166666667,45.25
+p2716,D. Female,Control,2.916666667,35.16666667
+p2724,D. Female,Control,0.35,29.06666667
+p2729,D. Female,Control,0.133333333,48.8
+p2723,D. Female,Control,0.766666667,26.83333333
+p2722,D. Female,Control,0.133333333,22.86666667
+p2725,D. Female,Control,0.383333333,25.7
+p2717,D. Female,Control,0.416666667,52.05
+s0981,D. Female,Control,1.583333333,24.68333333
+s0961,D. Female,Control,0.3,28.6
+s0962,D. Female,Control,0.583333333,16.71666667
+s0965,D. Female,Control,0.883333333,25.21666667
+s0956,D. Female,Control,0.383333333,32.26666667
+e3075,D. Female,Stressed,2.75,23.68333333
+e3091,D. Female,Stressed,1.083333333,25.35
+1755n,D. Female,Stressed,0.083333333,24.21666667
+e3080,D. Female,Stressed,0.583333333,24.21666667
+1752n,D. Female,Stressed,0.333333333,26.05
+1774n,D. Female,Stressed,2.25,14.33333333
+s0969,D. Female,Stressed,0.5,10.05
+s0982,D. Female,Stressed,0.216666667,23.83333333
+s0970,D. Female,Stressed,2.383333333,14.8
+s0971,D. Female,Stressed,0.666666667,16.93333333
+s0974,D. Female,Stressed,0.083333333,27.05
+s0960,D. Female,Stressed,0.966666667,20.08333333
+s0958,D. Female,Stressed,0.25,26.81666667
+s0954,D. Female,Stressed,0.216666667,25.93333333

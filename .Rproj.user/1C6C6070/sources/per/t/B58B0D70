@@ -1,0 +1,27 @@
+{
+    "id": "B58B0D70",
+    "path": "C:/R_Projects/Project-CSIS-Ephys/analysis/outlier tested group differences and paper figs.R",
+    "project_path": "analysis/outlier tested group differences and paper figs.R",
+    "type": "r_source",
+    "hash": "3149570953",
+    "contents": "",
+    "dirty": false,
+    "created": 1786201300223.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "324,0",
+        "scrollLine": "298"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1786213451,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1786213451106,
+    "read_only": false,
+    "read_only_alternatives": []
+}

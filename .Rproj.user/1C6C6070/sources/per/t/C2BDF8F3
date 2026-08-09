@@ -1,0 +1,27 @@
+{
+    "id": "C2BDF8F3",
+    "path": "C:/R_Projects/Project-CSIS-Ephys/analysis/male and d fem select behavior comparisons.R",
+    "project_path": "analysis/male and d fem select behavior comparisons.R",
+    "type": "r_source",
+    "hash": "1016844075",
+    "contents": "",
+    "dirty": false,
+    "created": 1786229598616.0,
+    "source_on_save": false,
+    "relative_order": 4,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "111,55",
+        "scrollLine": "73"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1786230652,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1786230652419,
+    "read_only": false,
+    "read_only_alternatives": []
+}
