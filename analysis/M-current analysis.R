@@ -250,6 +250,7 @@ grubbs.test(type = 11, mc.diff$'-75') #some - fix - c0824A or c0818C
 # first just removing c0880B -- this IS the cell that I thought might be too posterior anyway
 
 mc.diff.f1 <- mc.diff %>% filter(subslice != "c0880B")
+mcpro.long.f1 <- mcpro.long %>% filter(subslice != "c0880B")
 
 grubbs.test(type = 11, mc.diff.f1$'-25') #some now? gonna remove entire pool anyway so dw
 grubbs.test(type = 10, mc.diff.f1$'-30') #some - barely - c0880A
@@ -261,7 +262,7 @@ grubbs.test(type = 11, mc.diff.f1$'-55') #none
 grubbs.test(type = 11, mc.diff.f1$'-60') #none
 grubbs.test(type = 11, mc.diff.f1$'-65') #none
 grubbs.test(type = 11, mc.diff.f1$'-70') #none
-grubbs.test(type = 11, mc.diff.f1$'-75') #some - fix - c0824A or c0818C
+grubbs.test(type = 11, mc.diff.f1$'-75') #some - some? - c0824A or c0818C
 
 # ok - none of these occur in multiple places. Therefore, I'm just gonna keep all of them. 
 
@@ -366,6 +367,29 @@ mc.diff.f1.long2.m %>%
 ## saving m-c data to send to them 
 write.csv(mc.diff.f1.wide, "rawdata/mc.diff.f1.wide.csv")
 write.csv(mc.diff.f1.long, "rawdata/mc.diff.f1.long.csv")
+
+wideforprism <- mcpro.long.f1 %>% pivot_wider(names_from = subslice, values_from = pA)
+
+wideforprism.ttx.f.ctrl <- wideforprism %>% filter(drug == "TTX", sex == "Female", group == "ctrl") %>% select(where(~ !all(is.na(.))))
+wideforprism.xe.f.ctrl <- wideforprism %>% filter(drug == "XE", sex == "Female", group == "ctrl") %>% select(where(~ !all(is.na(.))))
+wideforprism.ttx.m.ctrl <- wideforprism %>% filter(drug == "TTX", sex == "Male", group == "ctrl") %>% select(where(~ !all(is.na(.))))
+wideforprism.xe.m.ctrl <- wideforprism %>% filter(drug == "XE", sex == "Male", group == "ctrl") %>% select(where(~ !all(is.na(.))))
+
+wideforprism.ttx.f.expt <- wideforprism %>% filter(drug == "TTX", sex == "Female", group == "expt") %>% select(where(~ !all(is.na(.))))
+wideforprism.xe.f.expt <- wideforprism %>% filter(drug == "XE", sex == "Female", group == "expt") %>% select(where(~ !all(is.na(.))))
+wideforprism.ttx.m.expt <- wideforprism %>% filter(drug == "TTX", sex == "Male", group == "expt") %>% select(where(~ !all(is.na(.))))
+wideforprism.xe.m.expt <- wideforprism %>% filter(drug == "XE", sex == "Male", group == "expt") %>% select(where(~ !all(is.na(.))))
+
+
+write.csv(wideforprism.ttx.f.ctrl, "rawdata/data for prism/wideforprism.ttx.f.ctrl.csv")
+write.csv(wideforprism.xe.f.ctrl, "rawdata/data for prism/wideforprism.xe.f.ctrl.csv")
+write.csv(wideforprism.ttx.m.ctrl, "rawdata/data for prism/wideforprism.ttx.m.ctrl.csv")
+write.csv(wideforprism.xe.m.ctrl, "rawdata/data for prism/wideforprism.xe.m.ctrl.csv")
+write.csv(wideforprism.ttx.f.expt, "rawdata/data for prism/wideforprism.ttx.f.expt.csv")
+write.csv(wideforprism.xe.f.expt, "rawdata/data for prism/wideforprism.xe.f.expt.csv")
+write.csv(wideforprism.ttx.m.expt, "rawdata/data for prism/wideforprism.ttx.m.expt.csv")
+write.csv(wideforprism.xe.m.expt, "rawdata/data for prism/wideforprism.xe.m.expt.csv")
+
 
 # ## testing just an anova....
 # # in all

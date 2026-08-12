@@ -3,7 +3,7 @@
     "path": "C:/R_Projects/Project-CSIS-Ephys/analysis/M-current analysis.R",
     "project_path": "analysis/M-current analysis.R",
     "type": "r_source",
-    "hash": "1204748885",
+    "hash": "324481605",
     "contents": "",
     "dirty": false,
     "created": 1772568253172.0,
@@ -13,15 +13,15 @@
         "tempName": "Untitled1",
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "286,0",
-        "scrollLine": "274"
+        "cursorPosition": "390,86",
+        "scrollLine": "375"
     },
     "folds": "",
-    "lastKnownWriteTime": 1782418509,
+    "lastKnownWriteTime": 1786558485,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1782418509576,
+    "last_content_update": 1786558485181,
     "read_only": false,
     "read_only_alternatives": []
 }

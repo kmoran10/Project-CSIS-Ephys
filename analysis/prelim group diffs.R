@@ -21,7 +21,7 @@ rmp.tp %>%
   ggplot(aes(RMP.timepoint,RMP, fill = sex, color = group))+
   geom_boxplot(outlier.shape = NA)+
   geom_jitter(position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.75), size = 1.5) +
-  scale_fill_manual(values=c("#f64ed5", "#55a0fd")) +
+  scale_fill_manual(values=c("hotpink", "skyblue")) +
   scale_color_manual(values=c("gray", "black"))+
   labs(title="Resting Membrane Potential",x="Group", y = "RMP (mV)") +
   theme_classic() +
@@ -34,12 +34,12 @@ rmp.tp %>%
 
 ## NEED TO DO LM AND NORMAL T TEST -- ESP @ JUST START
 
-rmp.pre <- rmp.tp %>% filter(RMP.timepoint == "RMP.pre") %>% select(!RMP.timepoint)
+rmp.start <- rmp.tp %>% filter(RMP.timepoint == "RMP.start") %>% select(!RMP.timepoint)
 
-rmp.lm.int <- lm(RMP ~ sex*group, data = rmp.pre)
+rmp.lm.int <- lm(RMP ~ sex*group, data = rmp.start)
 summary(rmp.lm.int)
 
-rmp.lm.main <- lm(RMP ~ sex + group, data = rmp.pre)
+rmp.lm.main <- lm(RMP ~ sex + group, data = rmp.start)
 summary(rmp.lm.main)
 
 
@@ -75,8 +75,7 @@ rmp.tp %>%
   select(-t_test)
 ## ok - will go back and add marker to graph?
 
-#sidak correction for rmp.pre 
-1 - (1 - c(0.338, 0.00489))^2
+
 
 
 #### input res (10mV minus -10mV div by 20)
@@ -105,7 +104,7 @@ in.re.tp2 %>%
   ggplot(aes(Inp.re.timepoint,Inp.re, fill = sex, color=group))+
   geom_boxplot(outlier.shape = NA)+
   geom_jitter(position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.75), size = 1.5) +
-  scale_fill_manual(values=c("#f64ed5", "#55a0fd")) +
+  scale_fill_manual(values=c("hotpink", "skyblue")) +
   scale_color_manual(values=c("gray", "black"))+
   labs(title="Input Resistance",x="Group", y = "Input Resistance (MΩ)") +
   theme_classic() +
@@ -120,12 +119,12 @@ in.re.tp2 %>%
 
 
 
-in.re.tp2.pre <- in.re.tp2 %>% filter(Inp.re.timepoint == "in.re.pre") %>% select(!Inp.re.timepoint)
+in.re.tp2.start <- in.re.tp2 %>% filter(Inp.re.timepoint == "in.re.start") %>% select(!Inp.re.timepoint)
 
-inre.lm.int <- lm(Inp.re ~ sex*group, data = in.re.tp2.pre)
+inre.lm.int <- lm(Inp.re ~ sex*group, data = in.re.tp2.start)
 summary(inre.lm.int)
 
-inre.lm.main <- lm(Inp.re ~ sex + group, data = in.re.tp2.pre)
+inre.lm.main <- lm(Inp.re ~ sex + group, data = in.re.tp2.start)
 summary(inre.lm.main)
 
 
@@ -163,8 +162,7 @@ in.re.tp2 %>%
   select(-t_test)
 ## ok - will go back and add marker to graph?
 
-#sidak correction for inp.re.pre 
-1 - (1 - c(0.294, .00333))^2
+
 
 
 
@@ -180,7 +178,7 @@ rie %>%
   ggplot(aes(group,epsc.events, fill = sex, color = group))+
   geom_boxplot(outlier.shape = NA)+
   geom_jitter(position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.75), size = 1.5) +
-  scale_fill_manual(values=c("#f64ed5", "#55a0fd")) +
+  scale_fill_manual(values=c("hotpink", "skyblue")) +
   scale_color_manual(values=c("gray", "black"))+
   labs(title="EPSC Events",x="Group", y = "Number of Events") +
   theme_classic() +
@@ -209,7 +207,7 @@ rie %>%
   ggplot(aes(group,epsc.amp, fill = sex, color=group))+
   geom_boxplot(outlier.shape = NA)+
   geom_jitter(position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.75), size = 1.5) +
-  scale_fill_manual(values=c("#f64ed5", "#55a0fd")) +
+  scale_fill_manual(values=c("hotpink", "skyblue")) +
   scale_color_manual(values=c("gray", "black"))+
   labs(title="EPSC Amplitude",x="Group", y = "Current (pA)") +
   theme_classic() +
@@ -237,7 +235,7 @@ rie %>%
   ggplot(aes(group,epsc.auc.pAms, fill = sex, color=group))+
   geom_boxplot(outlier.shape = NA)+
   geom_jitter(position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.75), size = 1.5) +
-  scale_fill_manual(values=c("#f64ed5", "#55a0fd")) +
+  scale_fill_manual(values=c("hotpink", "skyblue")) +
   scale_color_manual(values=c("gray", "black"))+
   labs(title="EPSC AUC",x="Group", y = "AUC (pA-ms)") +
   theme_classic() +
@@ -258,113 +256,3 @@ summary(epsc.auc.lm.main)
 
 
 
-
-########### POSTER FIGS
-
-# 600 x 750
-rmp.tp %>%
-  filter(RMP.timepoint == "RMP.pre") %>% 
-  mutate(sex = recode(sex, "M" = "Male", "F" = "Female")) %>% 
-  ggplot(aes(sex,RMP, fill = group))+
-  geom_boxplot(outlier.shape = NA)+
-  geom_jitter(position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.75), size = 1.5) +
-  scale_fill_manual(values=c("#f64ed5", "#55a0fd")) +
-  labs(title="A. Resting Membrane Potential",x="Group", y = "RMP (mV)") +
-  theme_classic() +
-  theme(axis.line = element_line(colour = 'black', size = 1),
-        axis.ticks = element_line(colour = "black", size = 1),
-                legend.position="none",
-        axis.text=element_text(size=16),
-        axis.title=element_text(size=18,face="bold"),
-        plot.title = element_text(size=28, hjust = 0.4)) + 
-  annotate("text", x = 1, y = -55, label = "**", size = 13) + 
-  annotate("segment", x = 0.75, xend = 2.25, y = -51, color = "black", size = 1) + 
-  annotate("text", x = 1.5, y = -52, label = "Interaction Effect", size = 5)+ 
-  annotate("text", x = 1.5, y = -50.7, label = "**", size = 12) +
-  scale_x_discrete(limits = c("Male", "Female"))
-
-
-# 600 x 750
-in.re.tp2 %>%
-  filter(Inp.re.timepoint == "in.re.pre") %>% 
-  mutate(sex = recode(sex, "F" = "Female", "M" = "Male")) %>% 
-  ggplot(aes(sex,Inp.re, fill = group))+
-  geom_boxplot(outlier.shape = NA)+
-  geom_jitter(position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.75), size = 1.5) +
-  scale_fill_manual(values=c("#f64ed5", "#55a0fd")) +
-  labs(title="B. Input Resistance",x="Group", y = "Input Resistance (MΩ)") +
-  theme_classic() +
-  theme(axis.line = element_line(colour = 'black', size = 1),
-        axis.ticks = element_line(colour = "black", size = 1),
-                legend.position="none",
-        axis.text=element_text(size=16),
-        axis.title=element_text(size=18,face="bold"),
-        plot.title = element_text(size=28, hjust = 0.4)) + 
-  annotate("text", x = 1, y = 6, label = "**", size = 13)+ 
-  annotate("segment", x = 0.75, xend = 2.25, y = 8, color = "black", size = 1) + 
-  annotate("text", x = 1.5, y = 7.8, label = "Interaction Effect", size = 5)+ 
-  annotate("text", x = 1.5, y = 8.05, label = "**", size = 12) +
-  scale_x_discrete(limits = c("Male", "Female"))
-
-
-
-##event number
-rie %>% 
-  filter(RMP.pre < -40) %>% 
-  filter(epsc.events <1000) %>% 
-  mutate(sex = recode(sex, "F" = "Female", "M" = "Male")) %>% 
-  ggplot(aes(sex,epsc.events, fill = group))+
-  geom_boxplot(outlier.shape = NA)+
-  geom_jitter(position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.75), size = 1.5) +
-  scale_fill_manual(values=c("#f64ed5", "#55a0fd")) +
-  labs(title="C. EPSC Events",x="Group", y = "Number of Events") +
-  theme_classic() +
-  theme(axis.line = element_line(colour = 'black', size = 1),
-        axis.ticks = element_line(colour = "black", size = 1),
-        legend.position="none",
-        axis.text=element_text(size=16),
-        axis.title=element_text(size=18,face="bold"),
-        plot.title = element_text(size=28, hjust = 0.4)) +
-  scale_x_discrete(limits = c("Male", "Female"))
-
-
-
-##event amp
-rie %>% 
-  filter(RMP.pre < -40) %>% 
-  filter(epsc.events <1000) %>% 
-  mutate(sex = recode(sex, "F" = "Female", "M" = "Male")) %>% 
-  ggplot(aes(sex,epsc.amp, fill = group))+
-  geom_boxplot(outlier.shape = NA)+
-  geom_jitter(position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.75), size = 1.5) +
-  scale_fill_manual(values=c("#f64ed5", "#55a0fd")) +
-  labs(title="D. EPSC Amplitude",x="Group", y = "Current (pA)") +
-  theme_classic() +
-  theme(axis.line = element_line(colour = 'black', size = 1),
-        axis.ticks = element_line(colour = "black", size = 1),
-        legend.position="none",
-        axis.text=element_text(size=16),
-        axis.title=element_text(size=18,face="bold"),
-        plot.title = element_text(size=28, hjust = 0.4)) +
-  scale_x_discrete(limits = c("Male", "Female"))
-
-
-
-##epsc AUC pAms
-rie %>% 
-  filter(RMP.pre < -40) %>% 
-  filter(epsc.events <1000) %>% 
-  mutate(sex = recode(sex, "F" = "Female", "M" = "Male")) %>% 
-  ggplot(aes(sex,epsc.auc.pAms, fill = group))+
-  geom_boxplot(outlier.shape = NA)+
-  geom_jitter(position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.75), size = 1.5) +
-  scale_fill_manual(values=c("#f64ed5", "#55a0fd")) +
-  labs(title="E. EPSC AUC",x="Group", y = "AUC (pA-ms)") +
-  theme_classic() +
-  theme(axis.line = element_line(colour = 'black', size = 1),
-        axis.ticks = element_line(colour = "black", size = 1),
-        legend.position="none",
-        axis.text=element_text(size=16),
-        axis.title=element_text(size=18,face="bold"),
-        plot.title = element_text(size=28, hjust = 0.4)) +
-  scale_x_discrete(limits = c("Male", "Female"))
