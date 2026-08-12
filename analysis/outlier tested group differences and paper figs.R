@@ -14,7 +14,8 @@ library(outliers)
 rie <- read.csv("rawdata/rmp_and_epsc.csv")
 rie$subslice <- paste(rie$subject, rie$slice, sep = "")
 rie <- rie %>% relocate(subslice)  %>% 
-  mutate(sex = recode(sex, "M" = "Male", "F" = "Female"))
+  mutate(sex = recode(sex, "M" = "Male", "F" = "Female")) %>% 
+  mutate(group = recode(group, "ctrl" = "Control", "expt" = "Stressed"))
 
 #### RMP
 
@@ -131,20 +132,21 @@ rmp.pre %>%
   geom_jitter(position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.75), size = 1.5) +
   scale_fill_manual(values=c("#f64ed5", "#55a0fd")) +
   scale_color_manual(values=c("gray", "black"))+
-  labs(title="A. Resting Membrane Potential",x="Sex", y = "RMP (mV)") +
+  labs(title="Resting Membrane Potential",x="Sex", y = "RMP (mV)") +
   theme_classic() +
   theme(axis.line = element_line(colour = 'black', size = 1),
         axis.ticks = element_line(colour = "black", size = 1),
-        #        legend.position="none",
+                legend.position="none",
         axis.text=element_text(size=16),
         axis.title=element_text(size=18,face="bold"),
         plot.title = element_text(size=24, hjust = 0.4)) + 
   annotate("text", x = 1, y = -55, label = "**", size = 13) + 
   annotate("segment", x = 0.75, xend = 2.25, y = -51, color = "black", size = 1) + 
-  annotate("text", x = 1.5, y = -52, label = "Interaction Effect", size = 5)+ 
+  annotate("text", x = 1.5, y = -51.8, label = "Interaction Effect", size = 6)+ 
   annotate("text", x = 1.5, y = -50.7, label = "**", size = 12)+
-  scale_x_discrete(limits = c("Male", "Female"))
-
+  scale_x_discrete(limits = c("Male", "Female"))+
+  labs(x = "")
+# 600 x 750
 
 ### INPUT RES
 head(riei2)
@@ -193,20 +195,21 @@ inpre.pre %>%
   geom_boxplot(outlier.shape = NA)+
   geom_jitter(position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.75), size = 1.5) +
   scale_fill_manual(values=c("#f64ed5", "#55a0fd")) +
-  labs(title="B. Input Resistance",x="Sex", y = "Input Resistance (MΩ)") +
+  labs(title="Input Resistance",x="Sex", y = "Input Resistance (MΩ)") +
   theme_classic() +
   theme(axis.line = element_line(colour = 'black', size = 1),
         axis.ticks = element_line(colour = "black", size = 1),
-        #legend.position="none",
+        legend.position="none",
         axis.text=element_text(size=16),
         axis.title=element_text(size=18,face="bold"),
         plot.title = element_text(size=28, hjust = 0.4)) + 
   annotate("text", x = 1, y = 6, label = "**", size = 13)+ 
   annotate("segment", x = 0.75, xend = 2.25, y = 8, color = "black", size = 1) + 
-  annotate("text", x = 1.5, y = 7.8, label = "Interaction Effect", size = 5)+ 
+  annotate("text", x = 1.5, y = 7.8, label = "Interaction Effect", size = 6)+ 
   annotate("text", x = 1.5, y = 8.05, label = "**", size = 12) +
-  scale_x_discrete(limits = c("Male", "Female"))
-
+  scale_x_discrete(limits = c("Male", "Female"))+
+  labs(x = "")
+#600x750
 
 
 ### group diffs and figs for EPSC measures. 
@@ -264,15 +267,16 @@ rie %>%
   geom_boxplot(outlier.shape = NA)+
   geom_jitter(position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.75), size = 1.5) +
   scale_fill_manual(values=c("#f64ed5", "#55a0fd")) +
-  labs(title="C. EPSC Events",x="Sex", y = "Number of Events") +
+  labs(title="EPSC Events",x="Sex", y = "Number of Events") +
   theme_classic() +
   theme(axis.line = element_line(colour = 'black', size = 1),
         axis.ticks = element_line(colour = "black", size = 1),
-        #legend.position="none",
+        legend.position="none",
         axis.text=element_text(size=16),
         axis.title=element_text(size=18,face="bold"),
         plot.title = element_text(size=28, hjust = 0.4)) +
-  scale_x_discrete(limits = c("Male", "Female"))
+  scale_x_discrete(limits = c("Male", "Female"))+
+  labs(x = "")
 
 
 
@@ -314,14 +318,16 @@ riei2 %>%
   geom_boxplot(outlier.shape = NA)+
   geom_jitter(position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.75), size = 1.5) +
   scale_fill_manual(values=c("#f64ed5", "#55a0fd")) +
-  labs(title="D. EPSC Amplitude",x="Sex", y = "Current (pA)") +
+  labs(title="EPSC Amplitude",x="Sex", y = "Current (pA)") +
   theme_classic() +
   theme(axis.line = element_line(colour = 'black', size = 1),
         axis.ticks = element_line(colour = "black", size = 1),
-        #legend.position="none",
+        legend.position="none",
         axis.text=element_text(size=16),
         axis.title=element_text(size=18,face="bold"),
-        plot.title = element_text(size=24, hjust = 0.4)) 
+        plot.title = element_text(size=24, hjust = 0.4))+
+  scale_x_discrete(limits = c("Male", "Female")) +
+  labs(x = "")
 
 
 
@@ -367,11 +373,13 @@ riei2 %>%
   geom_boxplot(outlier.shape = NA)+
   geom_jitter(position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.75), size = 1.5) +
   scale_fill_manual(values=c("#f64ed5", "#55a0fd")) +
-  labs(title="E. EPSC AUC",x="Sex", y = "AUC (pA-ms)") +
+  labs(title="EPSC AUC",x="Sex", y = "AUC (pA-ms)") +
   theme_classic() +
   theme(axis.line = element_line(colour = 'black', size = 1),
         axis.ticks = element_line(colour = "black", size = 1),
-        #legend.position="none",
+        legend.position="none",
         axis.text=element_text(size=16),
         axis.title=element_text(size=18,face="bold"),
-        plot.title = element_text(size=24, hjust = 0.4)) 
+        plot.title = element_text(size=24, hjust = 0.4))+
+  scale_x_discrete(limits = c("Male", "Female")) +
+  labs(x = "")
