@@ -9,7 +9,8 @@ rie <- read.csv("rawdata/rmp_and_epsc.csv")
 rie$subslice <- paste(rie$subject, rie$slice, sep = "")
 rie <- rie %>% relocate(subslice)
 
-rie <- rie %>% mutate(sex = recode(sex, "F" = "Female", "M" = "Male"))  
+rie <- rie %>% mutate(sex = recode(sex, "F" = "Female", "M" = "Male"))  %>%   mutate(group = recode(group, "ctrl" = "Control", "expt" = "Stressed"))
+
   
 
 library(Matrix)
@@ -17,6 +18,7 @@ library(lme4)
 library(lmerTest)
 library(ggpubr)
 library(car)
+library(outliers)
 library(emmeans)
 
 mcd <- read.csv("rawdata/mcurrent.csv")
@@ -420,7 +422,49 @@ write.csv(wideforprism.xe.m.expt, "rawdata/data for prism/wideforprism.xe.m.expt
 # Anova(aov6, type = 2)
 ### LOL JK FORGOT THIS IS REPEATED MEASURES I GOTTA USE MY LMER
 
+#500x750
+mc.diff.f1.long2 %>% 
+  filter(mV == -35) %>%
+  rename(max_MC_pA = pA) %>%
+  select(1,2,3,5) %>% 
+  filter(sex == "Female") %>% 
+  ggplot(aes(group,max_MC_pA, fill = group))+
+  geom_boxplot(outlier.shape = NA)+
+  geom_jitter(position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.75), size = 1.5) +
+  scale_fill_manual(values=c("#f64ed5", "#55a0fd")) +
+  labs(title="M-current peak:
+Females",x="Group", y = "Current (pA)") +
+  theme_classic() +
+  theme(axis.line = element_line(colour = 'black', size = 1),
+        axis.ticks = element_line(colour = "black", size = 1),
+        legend.position="none",
+        axis.text=element_text(size=20),
+        axis.title=element_text(size=20,face="bold"),
+        plot.title = element_text(size=34, hjust = 0.4))+
+  #scale_x_discrete(limits = c("Control", "Stress")) +
+  labs(x = "")
 
+#500x750
+mc.diff.f1.long2 %>% 
+  filter(mV == -35) %>%
+  rename(max_MC_pA = pA) %>%
+  select(1,2,3,5) %>% 
+  filter(sex == "Male") %>% 
+  ggplot(aes(group,max_MC_pA, fill = group))+
+  geom_boxplot(outlier.shape = NA)+
+  geom_jitter(position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.75), size = 1.5) +
+  scale_fill_manual(values=c("#f64ed5", "#55a0fd")) +
+  labs(title="M-current peak:
+Males",x="Group", y = "Current (pA)") +
+  theme_classic() +
+  theme(axis.line = element_line(colour = 'black', size = 1),
+        axis.ticks = element_line(colour = "black", size = 1),
+        legend.position="none",
+        axis.text=element_text(size=20),
+        axis.title=element_text(size=20,face="bold"),
+        plot.title = element_text(size=34, hjust = 0.4))+
+  #scale_x_discrete(limits = c("Control", "Stress")) +
+  labs(x = "")
 
 ######################################################################### END inserting grubbs testing and grubbs tested filtered analysis here, as well as removing -25mV timepoint. 
 
